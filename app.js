@@ -12,11 +12,13 @@ const contactRoutes = require("./routes/contact");
 const pagesRoutes = require("./routes/pages");
 const sessionsRoutes = require("./routes/session");
 
+require("dotenv").config();
+
 mongoose
-  .connect(
-    "mongodb+srv://lousempere:Loulou@cluster0.h1zt6xl.mongodb.net/?retryWrites=true&w=majority",
-    { useNewUrlParser: true, useUnifiedTopology: true }
-  )
+  .connect(process.env.MONGODB_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
   .then(() => console.log("Connexion à MongoDB réussie !"))
   .catch(() => console.log("Connexion à MongoDB échouée !"));
 
