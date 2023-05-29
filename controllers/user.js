@@ -44,16 +44,28 @@ exports.signup = (req, res, next) => {
         });
       }
 
-      // L'utilisateur n'existe pas, procéder à la création du compte
+      // Créer un nouvel utilisateur avec les données fournies
+      const user = new User({
+        username,
+        email,
+        password,
+      });
+
+      // Valider les données de l'utilisateur
+      const validationErrors = user.validateSync();
+      if (validationErrors) {
+        const errorMessages = Object.values(validationErrors.errors).map(
+          (error) => error.message
+        );
+        return res.status(400).json({ error: errorMessages });
+      }
+
+      // Hasher le mot de passe
       bcrypt
         .genSalt(parseInt(process.env.HASH_SALT))
         .then((salt) => bcrypt.hash(password, salt))
         .then((hash) => {
-          const user = new User({
-            username,
-            email,
-            password: hash,
-          });
+          user.password = hash;
 
           // Sauvegarder l'utilisateur dans la base de données
           return user.save();
