@@ -5,7 +5,10 @@ const Contact = require("../models/Contact");
 exports.createContact = (req, res, next) => {
   //   delete req.body._id;
   const contact = new Contact({
-    ...req.body,
+    nom: req.body.name,
+    email: req.body.email,
+    numero: req.body.phone,
+    message: req.body.message,
   });
 
   contact
