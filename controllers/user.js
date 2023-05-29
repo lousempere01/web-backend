@@ -2,29 +2,69 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const User = require("../models/User");
 
-exports.signup = (req, res, next) => {
-  bcrypt
-    .genSalt(parseInt(process.env.HASH_SALT))
-    .then((salt) => {
-      return bcrypt.hash(req.body.password, salt);
-    })
-    .then((hash) => {
-      const user = new User({
-        username: req.body.username,
-        email: req.body.email,
-        password: hash,
-      });
-      console.log(user);
-      res.status(201).json({ message: "Utilisateur créé !" });
-      // user
-      // .save()
-      // .then(() => res.status(201).json({ message: "Utilisateur créé !" }))
-      // .catch((error) => {
-      //   console.log(error);
-      //   res.status(400).json({ error: error.message });
-      // });
-    })
+// exports.signup = (req, res, next) => {
+//   bcrypt
+//     .genSalt(parseInt(process.env.HASH_SALT))
+//     .then((salt) => {
+//       return bcrypt.hash(req.body.password, salt);
+//     })
+//     .then((hash) => {
+//       const user = new User({
+//         username: req.body.username,
+//         email: req.body.email,
+//         password: hash,
+//       });
+//       console.log(user);
+//       res.status(201).json({ message: "Utilisateur créé !" });
+//       // user
+//       // .save()
+//       // .then(() => res.status(201).json({ message: "Utilisateur créé !" }))
+//       // .catch((error) => {
+//       //   console.log(error);
+//       //   res.status(400).json({ error: error.message });
+//       // });
+//     })
 
+//     .catch((err) => {
+//       res.status(500).json({ error: err.message });
+//     });
+// };
+
+exports.signup = (req, res, next) => {
+  const { username, email, password } = req.body;
+
+  // Vérifier si l'utilisateur existe déjà par adresse e-mail ou nom d'utilisateur
+  User.findOne({ $or: [{ email }, { username }] })
+    .then((existingUser) => {
+      if (existingUser) {
+        // Utilisateur déjà existant, renvoyer une erreur
+        return res.status(409).json({
+          message:
+            "Un compte avec cet e-mail ou nom d'utilisateur existe déjà.",
+        });
+      }
+
+      // L'utilisateur n'existe pas, procéder à la création du compte
+      bcrypt
+        .genSalt(parseInt(process.env.HASH_SALT))
+        .then((salt) => bcrypt.hash(password, salt))
+        .then((hash) => {
+          const user = new User({
+            username,
+            email,
+            password: hash,
+          });
+
+          // Sauvegarder l'utilisateur dans la base de données
+          return user.save();
+        })
+        .then(() => {
+          res.status(201).json({ message: "Utilisateur créé avec succès !" });
+        })
+        .catch((err) => {
+          res.status(500).json({ error: err.message });
+        });
+    })
     .catch((err) => {
       res.status(500).json({ error: err.message });
     });
