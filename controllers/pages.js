@@ -4,7 +4,7 @@ const moment = require("moment");
 // C - Créer une nouvelle page
 
 exports.createPage = (req, res, next) => {
-  delete req.body._id;
+  // delete req.body._id;
   const page = new Pages({
     ...req.body,
     date_creation: moment().toISOString(),
