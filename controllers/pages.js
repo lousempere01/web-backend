@@ -6,7 +6,11 @@ const moment = require("moment");
 exports.createPage = (req, res, next) => {
   // delete req.body._id;
   const page = new Pages({
-    ...req.body,
+    // ...req.body,
+    title: req.body.title,
+    contenu: req.body.content,
+    imageUrl: req.body.image,
+    category: req.body.category,
     date_creation: moment().toISOString(),
     date_modification: moment().toISOString(),
   });
