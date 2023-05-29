@@ -62,13 +62,13 @@ exports.login = (req, res, next) => {
     });
 };
 
-exports.logout = (req, res, next) => {
-  req.session.destroy((err) => {
-    if (err) {
-      res.status(500).json({ error: "Erreur lors de la déconnexion" });
-    } else {
-      req.logout(); // Déconnexion de l'utilisateur (fonction fournie par Passport.js)
-      res.status(200).json({ message: "Déconnexion réussie !" });
-    }
-  });
-};
+// exports.logout = (req, res, next) => {
+//   req.session.destroy((err) => {
+//     if (err) {
+//       res.status(500).json({ error: "Erreur lors de la déconnexion" });
+//     } else {
+//       req.logout(); // Déconnexion de l'utilisateur (fonction fournie par Passport.js)
+//       res.status(200).json({ message: "Déconnexion réussie !" });
+//     }
+//   });
+// };
