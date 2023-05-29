@@ -8,34 +8,23 @@ exports.signup = (req, res, next) => {
     .then((salt) => {
       return bcrypt.hash(req.body.password, salt);
     })
-    // .then((hash) => {
-    //   const user = new User({
-    //     username: req.body.username,
-    //     email: req.body.email,
-    //     password: hash,
-    //   });
-    //   console.log(user);
-    //   user
-    //     .save()
-    //     .then(() => res.status(201).json({ message: "Utilisateur créé !" }))
-    //     .catch((error) => {
-    //       console.log(error);
-    //       res.status(400).json({ error: error.message });
-    //     });
-    // })
     .then((hash) => {
-      const userdata = {
+      const user = new User({
         username: req.body.username,
         email: req.body.email,
         password: hash,
-      };
-      User.create(userdata)
-        .then(() => res.status(201).json({ message: "Utilisateur créé !" }))
-        .catch((error) => {
-          console.log(error);
-          res.status(400).json({ error: error.message });
-        });
+      });
+      console.log(user);
+      res.status(201).json({ message: "Utilisateur créé !" });
+      // user
+      // .save()
+      // .then(() => res.status(201).json({ message: "Utilisateur créé !" }))
+      // .catch((error) => {
+      //   console.log(error);
+      //   res.status(400).json({ error: error.message });
+      // });
     })
+
     .catch((err) => {
       res.status(500).json({ error: err.message });
     });
