@@ -5,7 +5,6 @@ const mongoose = require("mongoose");
 const path = require("path");
 const cors = require("cors");
 
-const stuffRoutes = require("./routes/stuff");
 const catRoutes = require("./routes/categories");
 const userRoutes = require("./routes/user");
 const contactRoutes = require("./routes/contact");
@@ -37,7 +36,6 @@ app.use((req, res, next) => {
 app.use(cors());
 app.use(express.json());
 app.use(bodyParser.json());
-app.use("/api/stuff", stuffRoutes);
 app.use("/api/auth", userRoutes);
 app.use("/images", express.static(path.join(__dirname, "images")));
 app.use("/api/categories", catRoutes);
